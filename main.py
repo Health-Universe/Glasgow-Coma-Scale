@@ -3,6 +3,10 @@ import streamlit as st
 def calculate_gcs(eye_response, verbal_response, motor_response):
     return eye_response + verbal_response + motor_response
 
+# Initialize session state
+if 'total_gcs' not in st.session_state:
+    st.session_state.total_gcs = None
+
 st.title('Glasgow Coma Scale (GCS) Calculator')
 
 st.header('Please select the scores for each component:')
@@ -32,9 +36,6 @@ motor_response_options = {
     'Obeys commands': 6
 }
 
-# Initialize total_gcs variable
-total_gcs = None
-
 # Streamlit SelectBox for each component
 eye_response = st.selectbox('Eye Response', options=list(eye_response_options.keys()))
 verbal_response = st.selectbox('Verbal Response', options=list(verbal_response_options.keys()))
@@ -42,20 +43,20 @@ motor_response = st.selectbox('Motor Response', options=list(motor_response_opti
 
 # Calculate GCS score
 if st.button('Calculate GCS Score'):
-    total_gcs = calculate_gcs(
+    st.session_state.total_gcs = calculate_gcs(
         eye_response_options[eye_response],
         verbal_response_options[verbal_response],
         motor_response_options[motor_response]
     )
-    st.success(f'The total GCS score is: {total_gcs}')
+    st.success(f'The total GCS score is: {st.session_state.total_gcs}')
 
 # Display Interpretation
 if st.button('Interpret GCS Score'):
-    if total_gcs is None:
+    if st.session_state.total_gcs is None:
         st.warning('Please calculate the GCS score first.')
-    elif total_gcs <= 8:
+    elif st.session_state.total_gcs <= 8:
         st.warning('Severe brain injury (GCS ≤ 8)')
-    elif total_gcs <= 12:
+    elif st.session_state.total_gcs <= 12:
         st.warning('Moderate brain injury (9 ≤ GCS ≤ 12)')
     else:
         st.success('Mild brain injury (GCS ≥ 13)')
