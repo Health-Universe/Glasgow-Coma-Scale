@@ -32,6 +32,9 @@ motor_response_options = {
     'Obeys commands': 6
 }
 
+# Initialize total_gcs variable
+total_gcs = None
+
 # Streamlit SelectBox for each component
 eye_response = st.selectbox('Eye Response', options=list(eye_response_options.keys()))
 verbal_response = st.selectbox('Verbal Response', options=list(verbal_response_options.keys()))
@@ -48,7 +51,9 @@ if st.button('Calculate GCS Score'):
 
 # Display Interpretation
 if st.button('Interpret GCS Score'):
-    if total_gcs <= 8:
+    if total_gcs is None:
+        st.warning('Please calculate the GCS score first.')
+    elif total_gcs <= 8:
         st.warning('Severe brain injury (GCS ≤ 8)')
     elif total_gcs <= 12:
         st.warning('Moderate brain injury (9 ≤ GCS ≤ 12)')
